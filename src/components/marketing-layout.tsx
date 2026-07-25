@@ -1,8 +1,9 @@
 import { Link } from "@tanstack/react-router";
-import { Github, Menu, X } from "lucide-react";
+import { Github, Menu, X, Twitter, Linkedin, Instagram } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { Logo } from "./logo";
 import { Button } from "@/components/ui/button";
+
 
 const navItems = [
   { label: "Home", to: "/" },
@@ -17,7 +18,8 @@ export function MarketingLayout({ children }: { children: ReactNode }) {
     <div className="flex min-h-screen flex-col bg-background">
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-xl">
         <div className="mx-auto grid max-w-7xl grid-cols-[auto_1fr_auto] items-center gap-4 px-4 py-3 sm:px-6 lg:px-8">
-          <Logo />
+          <Logo showTagline />
+
           <nav className="hidden items-center justify-center gap-1 md:flex">
             {navItems.map((item) => (
               <Link
@@ -79,31 +81,50 @@ export function MarketingLayout({ children }: { children: ReactNode }) {
       <footer className="border-t border-border/60 bg-background">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
           <div className="grid gap-8 md:grid-cols-4">
-            <div className="md:col-span-2">
-              <Logo />
-              <p className="mt-4 max-w-sm text-sm text-muted-foreground">
-                Study Smarter. Stress Less. StudyFlow AI is the all-in-one study
-                platform designed for modern students.
-              </p>
+            <div>
+              <Logo showTagline />
             </div>
             <div>
               <h4 className="text-sm font-semibold text-foreground">Company</h4>
               <ul className="mt-3 space-y-2 text-sm">
                 <li><Link to="/about" className="text-muted-foreground hover:text-foreground">About</Link></li>
                 <li><Link to="/contact" className="text-muted-foreground hover:text-foreground">Contact</Link></li>
-                <li><Link to="/privacy" className="text-muted-foreground hover:text-foreground">Privacy Policy</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="text-sm font-semibold text-foreground">Resources</h4>
               <ul className="mt-3 space-y-2 text-sm">
                 <li><Link to="/features" className="text-muted-foreground hover:text-foreground">Features</Link></li>
+                <li><Link to="/privacy" className="text-muted-foreground hover:text-foreground">Privacy Policy</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-foreground">Community</h4>
+              <ul className="mt-3 space-y-2 text-sm">
                 <li>
                   <a href="https://github.com" target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground">
                     <Github className="h-3.5 w-3.5" /> GitHub
                   </a>
                 </li>
               </ul>
+              <div className="mt-4 flex items-center gap-2">
+                {[
+                  { icon: Twitter, label: "Twitter", href: "https://twitter.com" },
+                  { icon: Linkedin, label: "LinkedIn", href: "https://linkedin.com" },
+                  { icon: Instagram, label: "Instagram", href: "https://instagram.com" },
+                ].map((s) => (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={s.label}
+                    className="grid h-9 w-9 place-items-center rounded-full border border-border text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+                  >
+                    <s.icon className="h-4 w-4" />
+                  </a>
+                ))}
+              </div>
             </div>
           </div>
           <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row">
@@ -112,6 +133,7 @@ export function MarketingLayout({ children }: { children: ReactNode }) {
           </div>
         </div>
       </footer>
+
     </div>
   );
 }
