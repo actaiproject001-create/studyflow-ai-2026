@@ -192,7 +192,7 @@ function Landing() {
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Button asChild size="lg" className="bg-gradient-primary text-white shadow-glow hover:opacity-95">
-                <Link to="/get-started">
+                <Link to="/dashboard">
                   Get Started <ArrowRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>
