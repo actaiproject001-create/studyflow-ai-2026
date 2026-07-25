@@ -39,7 +39,7 @@ export function MarketingLayout({ children }: { children: ReactNode }) {
               <Link to="/login">Login</Link>
             </Button>
             <Button asChild size="sm" className="bg-gradient-primary text-white shadow-glow hover:opacity-95">
-              <Link to="/get-started">Get Started</Link>
+              <Link to="/dashboard">Get Started</Link>
             </Button>
           </div>
           <button
@@ -68,7 +68,7 @@ export function MarketingLayout({ children }: { children: ReactNode }) {
                   <Link to="/login" onClick={() => setOpen(false)}>Login</Link>
                 </Button>
                 <Button asChild className="flex-1 bg-gradient-primary text-white">
-                  <Link to="/get-started" onClick={() => setOpen(false)}>Get Started</Link>
+                  <Link to="/dashboard" onClick={() => setOpen(false)}>Get Started</Link>
                 </Button>
               </div>
             </div>
