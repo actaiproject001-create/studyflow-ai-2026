@@ -1,5 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Search,
   LifeBuoy,
@@ -18,13 +19,17 @@ import {
   Send,
   X,
   ArrowUpRight,
-  MessagesSquare,
+  LogOut,
 } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { cn } from "@/lib/utils";
 import welcomeArt from "@/assets/dashboard-welcome.png";
+import { useAuth } from "@/contexts/auth-context";
+import { useDashboard } from "@/hooks/use-dashboard";
+import { dueLabel, greeting, initialsFrom, relativeTime, timeLabel } from "@/utils/format";
+import { AiAssistantPanel } from "@/components/ai-assistant-panel";
 
-export const Route = createFileRoute("/dashboard")({
+export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
       { title: "Dashboard — StudyFlow AI" },
@@ -44,13 +49,6 @@ export const Route = createFileRoute("/dashboard")({
   }),
   component: DashboardPage,
 });
-
-const stats = [
-  { icon: BookOpen, label: "Assignments", value: "12", unit: "Active", tint: "from-[#4F7CFF] to-[#7C5CFF]" },
-  { icon: Clock, label: "Study Hours", value: "5.5", unit: "Hours Today", tint: "from-[#7C5CFF] to-[#B15CFF]" },
-  { icon: CalendarDays, label: "Deadlines", value: "3", unit: "This Week", tint: "from-[#4F7CFF] to-[#37C4FF]" },
-  { icon: TrendingUp, label: "Productivity", value: "89%", unit: "This Week", tint: "from-[#FFC94D] to-[#FF8A4D]" },
-];
 
 const tools = [
   {
@@ -91,41 +89,66 @@ const tools = [
   },
 ];
 
-const deadlines = [
-  { title: "AI Assignment", when: "Tomorrow", level: "High" },
-  { title: "Cybersecurity Quiz", when: "Friday", level: "Medium" },
-  { title: "Database Project", when: "Monday", level: "Low" },
-];
-
-const conversations = [
-  { icon: BookOpen, title: "Assignment Help", time: "2h ago" },
-  { icon: FlaskConical, title: "Research on AI Ethics", time: "Yesterday" },
-  { icon: Brain, title: "Operating Systems Notes", time: "2 days ago" },
-  { icon: MessagesSquare, title: "Machine Learning Summary", time: "4 days ago" },
-];
-
-const schedule = [
-  { time: "9:00 AM", title: "Cybersecurity Lecture" },
-  { time: "11:00 AM", title: "Assignment Writing" },
-  { time: "2:00 PM", title: "Research Session" },
-  { time: "6:00 PM", title: "Revision" },
-];
-
 const quickActions = [
-  { icon: Upload, label: "Upload Assignment" },
-  { icon: FileUp, label: "Upload PDF" },
-  { icon: FlaskConical, label: "Start Research" },
-  { icon: Sparkles, label: "Ask AI" },
+  { icon: Upload, label: "Upload Assignment", to: "/ai-copilot" as const },
+  { icon: FileUp, label: "Upload PDF", to: "/ai-research" as const },
+  { icon: FlaskConical, label: "Start Research", to: "/ai-research" as const },
+  { icon: Sparkles, label: "Plan my week", to: "/study-planner" as const },
 ];
 
 const priorityStyles: Record<string, string> = {
-  High: "bg-destructive/10 text-destructive",
-  Medium: "bg-[#FFC94D]/20 text-[#8A5B00]",
-  Low: "bg-primary/10 text-primary",
+  high: "bg-destructive/10 text-destructive",
+  medium: "bg-[#FFC94D]/20 text-[#8A5B00]",
+  low: "bg-primary/10 text-primary",
 };
 
 function DashboardPage() {
   const [chatOpen, setChatOpen] = useState(false);
+  const { user, profile, signOut } = useAuth();
+  const { data, isLoading } = useDashboard();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const initials = initialsFrom(profile?.full_name, profile?.email ?? user?.email);
+  const firstName = (profile?.full_name ?? "").split(" ")[0];
+
+  const stats = [
+    {
+      icon: BookOpen,
+      label: "Assignments",
+      value: String(data?.activeAssignmentsCount ?? 0),
+      unit: "Active",
+      tint: "from-[#4F7CFF] to-[#7C5CFF]",
+    },
+    {
+      icon: Clock,
+      label: "Study Hours",
+      value: (data?.studyHoursToday ?? 0).toFixed(1),
+      unit: "Hours Today",
+      tint: "from-[#7C5CFF] to-[#B15CFF]",
+    },
+    {
+      icon: CalendarDays,
+      label: "Deadlines",
+      value: String(data?.upcomingDeadlines.length ?? 0),
+      unit: "Upcoming",
+      tint: "from-[#4F7CFF] to-[#37C4FF]",
+    },
+    {
+      icon: TrendingUp,
+      label: "Productivity",
+      value: `${data?.productivityScore ?? 0}%`,
+      unit: "This Week",
+      tint: "from-[#FFC94D] to-[#FF8A4D]",
+    },
+  ];
+
+  async function handleSignOut() {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await signOut();
+    await navigate({ to: "/login", replace: true });
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -160,14 +183,20 @@ function DashboardPage() {
               className="relative grid h-10 w-10 place-items-center rounded-xl border border-border bg-card text-muted-foreground transition-all hover:-translate-y-0.5 hover:text-primary hover:shadow-elegant"
             >
               <Bell className="h-4 w-4" />
-              <span className="absolute right-2.5 top-2.5 h-2 w-2 rounded-full bg-destructive" />
             </Link>
+            <button
+              onClick={handleSignOut}
+              aria-label="Sign out"
+              className="grid h-10 w-10 place-items-center rounded-xl border border-border bg-card text-muted-foreground transition-all hover:-translate-y-0.5 hover:text-primary hover:shadow-elegant"
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
             <Link
               to="/profile"
               aria-label="Profile"
-              className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-primary text-sm font-semibold text-white shadow-glow transition-transform hover:scale-105"
+              className="grid h-10 w-10 place-items-center overflow-hidden rounded-xl bg-gradient-primary text-sm font-semibold text-white shadow-glow transition-transform hover:scale-105"
             >
-              JS
+              {initials}
             </Link>
           </div>
         </div>
@@ -180,18 +209,24 @@ function DashboardPage() {
             <div className="max-w-xl text-center md:text-left">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">Your workspace</p>
               <h1 className="mt-3 font-display text-3xl font-bold tracking-tight sm:text-4xl">
-                Good Morning 👋
+                {greeting()}{firstName ? `, ${firstName}` : ""} 👋
               </h1>
               <p className="mt-2 text-base text-muted-foreground">
                 Ready to achieve today's study goals?
               </p>
               <div className="mt-6 flex flex-wrap justify-center gap-3 md:justify-start">
-                <button className="rounded-xl bg-gradient-primary px-5 py-2.5 text-sm font-semibold text-white shadow-glow transition-transform hover:scale-105">
+                <Link
+                  to="/study-planner"
+                  className="rounded-xl bg-gradient-primary px-5 py-2.5 text-sm font-semibold text-white shadow-glow transition-transform hover:scale-105"
+                >
                   Plan my day
-                </button>
-                <button className="rounded-xl border border-border bg-card px-5 py-2.5 text-sm font-semibold transition-all hover:-translate-y-0.5 hover:shadow-elegant">
+                </Link>
+                <Link
+                  to="/profile"
+                  className="rounded-xl border border-border bg-card px-5 py-2.5 text-sm font-semibold transition-all hover:-translate-y-0.5 hover:shadow-elegant"
+                >
                   View progress
-                </button>
+                </Link>
               </div>
             </div>
             <img
@@ -221,7 +256,9 @@ function DashboardPage() {
               >
                 <s.icon className="h-5 w-5" />
               </span>
-              <p className="mt-4 font-display text-3xl font-bold tracking-tight">{s.value}</p>
+              <p className="mt-4 font-display text-3xl font-bold tracking-tight">
+                {isLoading ? "—" : s.value}
+              </p>
               <p className="text-sm font-medium">{s.label}</p>
               <p className="text-xs text-muted-foreground">{s.unit}</p>
             </div>
@@ -266,59 +303,79 @@ function DashboardPage() {
           <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
             <h3 className="font-display text-lg font-semibold">Upcoming Deadlines</h3>
             <div className="mt-5 space-y-3">
-              {deadlines.map((d) => (
+              {(data?.upcomingDeadlines ?? []).map((d) => (
                 <div
-                  key={d.title}
+                  key={d.id}
                   className="flex items-center justify-between gap-3 rounded-xl border border-border bg-background p-4 transition-all hover:-translate-y-0.5 hover:shadow-elegant"
                 >
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium">{d.title}</p>
-                    <p className="text-xs text-muted-foreground">{d.when}</p>
+                    <p className="text-xs text-muted-foreground">{dueLabel(d.due_date)}</p>
                   </div>
                   <span
                     className={cn(
-                      "shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold",
-                      priorityStyles[d.level],
+                      "shrink-0 rounded-full px-2.5 py-1 text-[11px] font-semibold capitalize",
+                      priorityStyles[d.priority ?? "low"] ?? priorityStyles.low,
                     )}
                   >
-                    {d.level}
+                    {d.priority ?? "low"}
                   </span>
                 </div>
               ))}
+              {!isLoading && (data?.upcomingDeadlines.length ?? 0) === 0 && (
+                <p className="rounded-xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
+                  No deadlines yet — add an assignment to see it here.
+                </p>
+              )}
             </div>
           </div>
 
           <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
             <h3 className="font-display text-lg font-semibold">Recent AI Conversations</h3>
             <div className="mt-5 space-y-3">
-              {conversations.map((c) => (
+              {(data?.recentActivity ?? []).map((c) => (
                 <div
-                  key={c.title}
+                  key={c.id}
                   className="flex items-center gap-3 rounded-xl border border-border bg-background p-4 transition-all hover:-translate-y-0.5 hover:shadow-elegant"
                 >
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-secondary text-primary">
-                    <c.icon className="h-4 w-4" />
+                    <Sparkles className="h-4 w-4" />
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium">{c.title}</p>
-                    <p className="text-xs text-muted-foreground">{c.time}</p>
+                    <p className="truncate text-sm font-medium">{c.prompt}</p>
+                    <p className="text-xs text-muted-foreground">{relativeTime(c.created_at)}</p>
                   </div>
                 </div>
               ))}
+              {!isLoading && (data?.recentActivity.length ?? 0) === 0 && (
+                <p className="rounded-xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
+                  Ask the assistant anything to start your history.
+                </p>
+              )}
             </div>
           </div>
 
           <div className="rounded-2xl border border-border bg-card p-6 shadow-sm">
             <h3 className="font-display text-lg font-semibold">Today's Schedule</h3>
-            <ol className="relative mt-5 space-y-5 border-l border-border pl-6">
-              {schedule.map((s) => (
-                <li key={s.time} className="relative">
-                  <span className="absolute -left-[31px] top-1 grid h-3 w-3 place-items-center rounded-full bg-gradient-primary shadow-glow" />
-                  <p className="text-xs font-semibold uppercase tracking-wide text-primary">{s.time}</p>
-                  <p className="text-sm font-medium">{s.title}</p>
-                </li>
-              ))}
-            </ol>
+            {(data?.todaySchedule.length ?? 0) > 0 ? (
+              <ol className="relative mt-5 space-y-5 border-l border-border pl-6">
+                {(data?.todaySchedule ?? []).map((s) => (
+                  <li key={s.id} className="relative">
+                    <span className="absolute -left-[31px] top-1 grid h-3 w-3 place-items-center rounded-full bg-gradient-primary shadow-glow" />
+                    <p className="text-xs font-semibold uppercase tracking-wide text-primary">
+                      {timeLabel(s.start_date) || dueLabel(s.start_date)}
+                    </p>
+                    <p className="text-sm font-medium">{s.title}</p>
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              !isLoading && (
+                <p className="mt-5 rounded-xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
+                  Generate a study plan to fill your day.
+                </p>
+              )
+            )}
           </div>
         </section>
 
@@ -327,15 +384,16 @@ function DashboardPage() {
           <h2 className="font-display text-2xl font-bold tracking-tight">Quick Actions</h2>
           <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {quickActions.map((a) => (
-              <button
+              <Link
                 key={a.label}
+                to={a.to}
                 className="group flex items-center gap-3 rounded-2xl border border-border bg-card p-5 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-glow"
               >
                 <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gradient-primary text-white shadow-glow transition-transform duration-300 group-hover:scale-110">
                   <a.icon className="h-5 w-5" />
                 </span>
                 <span className="text-sm font-semibold">{a.label}</span>
-              </button>
+              </Link>
             ))}
           </div>
         </section>
@@ -350,7 +408,7 @@ function DashboardPage() {
 
       {/* Floating AI assistant */}
       {chatOpen && (
-        <div className="fixed bottom-24 right-5 z-50 w-[min(360px,calc(100vw-2.5rem))] animate-scale-in overflow-hidden rounded-2xl border border-border bg-card/95 shadow-elegant backdrop-blur-xl">
+        <div className="fixed bottom-24 right-5 z-50 w-[min(380px,calc(100vw-2.5rem))] animate-scale-in overflow-hidden rounded-2xl border border-border bg-card/95 shadow-elegant backdrop-blur-xl">
           <div className="flex items-center gap-3 bg-gradient-primary px-4 py-3 text-white">
             <Sparkles className="h-4 w-4" />
             <p className="flex-1 text-sm font-semibold">StudyFlow Assistant</p>
@@ -358,21 +416,7 @@ function DashboardPage() {
               <X className="h-4 w-4" />
             </button>
           </div>
-          <div className="space-y-3 p-4">
-            <div className="rounded-xl bg-secondary p-3 text-sm text-muted-foreground">
-              Hi Jane! I'm your study assistant. AI responses are coming soon — this is a preview panel.
-            </div>
-            <div className="flex items-center gap-2 rounded-xl border border-border bg-background p-2">
-              <input
-                disabled
-                placeholder="Ask me anything..."
-                className="min-w-0 flex-1 bg-transparent px-2 text-sm outline-none"
-              />
-              <span className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-primary text-white">
-                <Send className="h-4 w-4" />
-              </span>
-            </div>
-          </div>
+          <AiAssistantPanel tool="second_brain" placeholder="Ask me anything..." />
         </div>
       )}
 
@@ -382,6 +426,7 @@ function DashboardPage() {
         className="fixed bottom-6 right-5 z-50 grid h-14 w-14 place-items-center rounded-full bg-gradient-primary text-white shadow-glow transition-transform hover:scale-110"
       >
         <span className="absolute inset-0 animate-ping rounded-full bg-primary/30" />
+        <Send className="relative hidden" />
         <Sparkles className="relative h-6 w-6" />
       </button>
     </div>

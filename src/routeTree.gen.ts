@@ -9,50 +9,33 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SupportRouteImport } from './routes/support'
-import { Route as StudyPlannerRouteImport } from './routes/study-planner'
-import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as PrivacyRouteImport } from './routes/privacy'
-import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as GetStartedRouteImport } from './routes/get-started'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
 import { Route as FeaturesRouteImport } from './routes/features'
-import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as ContactRouteImport } from './routes/contact'
-import { Route as AiResearchRouteImport } from './routes/ai-research'
-import { Route as AiCopilotRouteImport } from './routes/ai-copilot'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedSupportRouteImport } from './routes/_authenticated/support'
+import { Route as AuthenticatedStudyPlannerRouteImport } from './routes/_authenticated/study-planner'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
+import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedAiResearchRouteImport } from './routes/_authenticated/ai-research'
+import { Route as AuthenticatedAiCopilotRouteImport } from './routes/_authenticated/ai-copilot'
 
-const SupportRoute = SupportRouteImport.update({
-  id: '/support',
-  path: '/support',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const StudyPlannerRoute = StudyPlannerRouteImport.update({
-  id: '/study-planner',
-  path: '/study-planner',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsRoute = SettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProfileRoute = ProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NotificationsRoute = NotificationsRouteImport.update({
-  id: '/notifications',
-  path: '/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -65,14 +48,14 @@ const GetStartedRoute = GetStartedRouteImport.update({
   path: '/get-started',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FeaturesRoute = FeaturesRouteImport.update({
   id: '/features',
   path: '/features',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -80,19 +63,13 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AiResearchRoute = AiResearchRouteImport.update({
-  id: '/ai-research',
-  path: '/ai-research',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AiCopilotRoute = AiCopilotRouteImport.update({
-  id: '/ai-copilot',
-  path: '/ai-copilot',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -100,73 +77,124 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedSupportRoute = AuthenticatedSupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedStudyPlannerRoute =
+  AuthenticatedStudyPlannerRouteImport.update({
+    id: '/study-planner',
+    path: '/study-planner',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedNotificationsRoute =
+  AuthenticatedNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAiResearchRoute = AuthenticatedAiResearchRouteImport.update({
+  id: '/ai-research',
+  path: '/ai-research',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAiCopilotRoute = AuthenticatedAiCopilotRouteImport.update({
+  id: '/ai-copilot',
+  path: '/ai-copilot',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/ai-copilot': typeof AiCopilotRoute
-  '/ai-research': typeof AiResearchRoute
   '/contact': typeof ContactRoute
-  '/dashboard': typeof DashboardRoute
   '/features': typeof FeaturesRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/get-started': typeof GetStartedRoute
   '/login': typeof LoginRoute
-  '/notifications': typeof NotificationsRoute
   '/privacy': typeof PrivacyRoute
-  '/profile': typeof ProfileRoute
-  '/settings': typeof SettingsRoute
-  '/study-planner': typeof StudyPlannerRoute
-  '/support': typeof SupportRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/ai-copilot': typeof AuthenticatedAiCopilotRoute
+  '/ai-research': typeof AuthenticatedAiResearchRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
+  '/profile': typeof AuthenticatedProfileRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/study-planner': typeof AuthenticatedStudyPlannerRoute
+  '/support': typeof AuthenticatedSupportRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/ai-copilot': typeof AiCopilotRoute
-  '/ai-research': typeof AiResearchRoute
   '/contact': typeof ContactRoute
-  '/dashboard': typeof DashboardRoute
   '/features': typeof FeaturesRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/get-started': typeof GetStartedRoute
   '/login': typeof LoginRoute
-  '/notifications': typeof NotificationsRoute
   '/privacy': typeof PrivacyRoute
-  '/profile': typeof ProfileRoute
-  '/settings': typeof SettingsRoute
-  '/study-planner': typeof StudyPlannerRoute
-  '/support': typeof SupportRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/ai-copilot': typeof AuthenticatedAiCopilotRoute
+  '/ai-research': typeof AuthenticatedAiResearchRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
+  '/profile': typeof AuthenticatedProfileRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/study-planner': typeof AuthenticatedStudyPlannerRoute
+  '/support': typeof AuthenticatedSupportRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/about': typeof AboutRoute
-  '/ai-copilot': typeof AiCopilotRoute
-  '/ai-research': typeof AiResearchRoute
   '/contact': typeof ContactRoute
-  '/dashboard': typeof DashboardRoute
   '/features': typeof FeaturesRoute
+  '/forgot-password': typeof ForgotPasswordRoute
   '/get-started': typeof GetStartedRoute
   '/login': typeof LoginRoute
-  '/notifications': typeof NotificationsRoute
   '/privacy': typeof PrivacyRoute
-  '/profile': typeof ProfileRoute
-  '/settings': typeof SettingsRoute
-  '/study-planner': typeof StudyPlannerRoute
-  '/support': typeof SupportRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/_authenticated/ai-copilot': typeof AuthenticatedAiCopilotRoute
+  '/_authenticated/ai-research': typeof AuthenticatedAiResearchRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
+  '/_authenticated/profile': typeof AuthenticatedProfileRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/study-planner': typeof AuthenticatedStudyPlannerRoute
+  '/_authenticated/support': typeof AuthenticatedSupportRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
-    | '/ai-copilot'
-    | '/ai-research'
     | '/contact'
-    | '/dashboard'
     | '/features'
+    | '/forgot-password'
     | '/get-started'
     | '/login'
-    | '/notifications'
     | '/privacy'
+    | '/reset-password'
+    | '/ai-copilot'
+    | '/ai-research'
+    | '/dashboard'
+    | '/notifications'
     | '/profile'
     | '/settings'
     | '/study-planner'
@@ -175,15 +203,17 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
-    | '/ai-copilot'
-    | '/ai-research'
     | '/contact'
-    | '/dashboard'
     | '/features'
+    | '/forgot-password'
     | '/get-started'
     | '/login'
-    | '/notifications'
     | '/privacy'
+    | '/reset-password'
+    | '/ai-copilot'
+    | '/ai-research'
+    | '/dashboard'
+    | '/notifications'
     | '/profile'
     | '/settings'
     | '/study-planner'
@@ -191,68 +221,45 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/about'
-    | '/ai-copilot'
-    | '/ai-research'
     | '/contact'
-    | '/dashboard'
     | '/features'
+    | '/forgot-password'
     | '/get-started'
     | '/login'
-    | '/notifications'
     | '/privacy'
-    | '/profile'
-    | '/settings'
-    | '/study-planner'
-    | '/support'
+    | '/reset-password'
+    | '/_authenticated/ai-copilot'
+    | '/_authenticated/ai-research'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/notifications'
+    | '/_authenticated/profile'
+    | '/_authenticated/settings'
+    | '/_authenticated/study-planner'
+    | '/_authenticated/support'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
-  AiCopilotRoute: typeof AiCopilotRoute
-  AiResearchRoute: typeof AiResearchRoute
   ContactRoute: typeof ContactRoute
-  DashboardRoute: typeof DashboardRoute
   FeaturesRoute: typeof FeaturesRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
   GetStartedRoute: typeof GetStartedRoute
   LoginRoute: typeof LoginRoute
-  NotificationsRoute: typeof NotificationsRoute
   PrivacyRoute: typeof PrivacyRoute
-  ProfileRoute: typeof ProfileRoute
-  SettingsRoute: typeof SettingsRoute
-  StudyPlannerRoute: typeof StudyPlannerRoute
-  SupportRoute: typeof SupportRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/support': {
-      id: '/support'
-      path: '/support'
-      fullPath: '/support'
-      preLoaderRoute: typeof SupportRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/study-planner': {
-      id: '/study-planner'
-      path: '/study-planner'
-      fullPath: '/study-planner'
-      preLoaderRoute: typeof StudyPlannerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteImport
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -260,13 +267,6 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/notifications': {
-      id: '/notifications'
-      path: '/notifications'
-      fullPath: '/notifications'
-      preLoaderRoute: typeof NotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -283,18 +283,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GetStartedRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/features': {
       id: '/features'
       path: '/features'
       fullPath: '/features'
       preLoaderRoute: typeof FeaturesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -304,25 +304,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/ai-research': {
-      id: '/ai-research'
-      path: '/ai-research'
-      fullPath: '/ai-research'
-      preLoaderRoute: typeof AiResearchRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ai-copilot': {
-      id: '/ai-copilot'
-      path: '/ai-copilot'
-      fullPath: '/ai-copilot'
-      preLoaderRoute: typeof AiCopilotRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/about': {
       id: '/about'
       path: '/about'
       fullPath: '/about'
       preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -332,26 +325,112 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/support': {
+      id: '/_authenticated/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof AuthenticatedSupportRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/study-planner': {
+      id: '/_authenticated/study-planner'
+      path: '/study-planner'
+      fullPath: '/study-planner'
+      preLoaderRoute: typeof AuthenticatedStudyPlannerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthenticatedProfileRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/notifications': {
+      id: '/_authenticated/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AuthenticatedNotificationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/ai-research': {
+      id: '/_authenticated/ai-research'
+      path: '/ai-research'
+      fullPath: '/ai-research'
+      preLoaderRoute: typeof AuthenticatedAiResearchRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/ai-copilot': {
+      id: '/_authenticated/ai-copilot'
+      path: '/ai-copilot'
+      fullPath: '/ai-copilot'
+      preLoaderRoute: typeof AuthenticatedAiCopilotRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAiCopilotRoute: typeof AuthenticatedAiCopilotRoute
+  AuthenticatedAiResearchRoute: typeof AuthenticatedAiResearchRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedStudyPlannerRoute: typeof AuthenticatedStudyPlannerRoute
+  AuthenticatedSupportRoute: typeof AuthenticatedSupportRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAiCopilotRoute: AuthenticatedAiCopilotRoute,
+  AuthenticatedAiResearchRoute: AuthenticatedAiResearchRoute,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
+  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedStudyPlannerRoute: AuthenticatedStudyPlannerRoute,
+  AuthenticatedSupportRoute: AuthenticatedSupportRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AboutRoute: AboutRoute,
-  AiCopilotRoute: AiCopilotRoute,
-  AiResearchRoute: AiResearchRoute,
   ContactRoute: ContactRoute,
-  DashboardRoute: DashboardRoute,
   FeaturesRoute: FeaturesRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
   GetStartedRoute: GetStartedRoute,
   LoginRoute: LoginRoute,
-  NotificationsRoute: NotificationsRoute,
   PrivacyRoute: PrivacyRoute,
-  ProfileRoute: ProfileRoute,
-  SettingsRoute: SettingsRoute,
-  StudyPlannerRoute: StudyPlannerRoute,
-  SupportRoute: SupportRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

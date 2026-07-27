@@ -1,4 +1,4 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   LayoutDashboard,
   BookOpen,
@@ -11,10 +11,14 @@ import {
   Menu,
   X,
   Search,
+  LogOut,
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { Logo } from "./logo";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/auth-context";
+import { initialsFrom } from "@/utils/format";
+import { useQueryClient } from "@tanstack/react-query";
 
 const items = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -37,6 +41,18 @@ export function AppLayout({
   children: ReactNode;
 }) {
   const [open, setOpen] = useState(false);
+  const { user, profile, signOut } = useAuth();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const initials = initialsFrom(profile?.full_name, profile?.email ?? user?.email);
+
+  async function handleSignOut() {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await signOut();
+    await navigate({ to: "/login", replace: true });
+  }
+
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   const Sidebar = (
@@ -104,12 +120,27 @@ export function AppLayout({
             />
           </div>
           <div className="ml-auto flex items-center gap-3">
-            <button className="grid h-10 w-10 place-items-center rounded-xl border border-border bg-background hover:bg-secondary">
+            <Link
+              to="/notifications"
+              aria-label="Notifications"
+              className="grid h-10 w-10 place-items-center rounded-xl border border-border bg-background hover:bg-secondary"
+            >
               <Bell className="h-4 w-4" />
+            </Link>
+            <button
+              onClick={handleSignOut}
+              aria-label="Sign out"
+              className="grid h-10 w-10 place-items-center rounded-xl border border-border bg-background hover:bg-secondary"
+            >
+              <LogOut className="h-4 w-4" />
             </button>
-            <div className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-primary text-sm font-semibold text-white">
-              JS
-            </div>
+            <Link
+              to="/profile"
+              aria-label="Profile"
+              className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-primary text-sm font-semibold text-white"
+            >
+              {initials}
+            </Link>
           </div>
           <button
             onClick={() => setOpen(false)}
