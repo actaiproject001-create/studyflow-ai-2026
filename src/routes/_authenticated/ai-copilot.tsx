@@ -3,7 +3,7 @@ import { AppLayout } from "@/components/app-layout";
 import { EmptyState } from "@/components/empty-state";
 import { BookOpen } from "lucide-react";
 
-export const Route = createFileRoute("/ai-copilot")({
+export const Route = createFileRoute("/_authenticated/ai-copilot")({
   head: () => ({
     meta: [
       { title: "AI Assignment Copilot — StudyFlow AI" },

@@ -3,7 +3,7 @@ import { AppLayout } from "@/components/app-layout";
 import { EmptyState } from "@/components/empty-state";
 import { LifeBuoy } from "lucide-react";
 
-export const Route = createFileRoute("/support")({
+export const Route = createFileRoute("/_authenticated/support")({
   head: () => ({
     meta: [
       { title: "Support — StudyFlow AI" },

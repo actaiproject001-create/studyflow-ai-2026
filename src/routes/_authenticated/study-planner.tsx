@@ -3,7 +3,7 @@ import { AppLayout } from "@/components/app-layout";
 import { EmptyState } from "@/components/empty-state";
 import { CalendarClock } from "lucide-react";
 
-export const Route = createFileRoute("/study-planner")({
+export const Route = createFileRoute("/_authenticated/study-planner")({
   head: () => ({
     meta: [
       { title: "Study Planner — StudyFlow AI" },

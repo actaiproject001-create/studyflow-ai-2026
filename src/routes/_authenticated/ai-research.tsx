@@ -3,7 +3,7 @@ import { AppLayout } from "@/components/app-layout";
 import { EmptyState } from "@/components/empty-state";
 import { FlaskConical } from "lucide-react";
 
-export const Route = createFileRoute("/ai-research")({
+export const Route = createFileRoute("/_authenticated/ai-research")({
   head: () => ({
     meta: [
       { title: "AI Research Assistant — StudyFlow AI" },
