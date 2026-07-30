@@ -45,13 +45,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.subscription.unsubscribe();
   }, []);
 
-  const loadProfile = useCallback(async (userId: string) => {
+  const loadProfile = useCallback(async (u: User) => {
     try {
-      setProfile(await fetchProfile(userId));
+      // Profiles are created by a database trigger on signup; this is a safety net
+      // for accounts that existed before the trigger.
+      setProfile((await fetchProfile(u.id)) ?? (await ensureProfile(u.id, u.email, (u.user_metadata?.full_name as string) ?? null)));
     } catch {
       setProfile(null);
     }
   }, []);
+
+  useEffect(() => {
+    if (user) void loadProfile(user);
+  }, [user, loadProfile]);
+
 
   useEffect(() => {
     if (user?.id) void loadProfile(user.id);

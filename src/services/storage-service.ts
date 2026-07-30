@@ -1,22 +1,27 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { StorageBucket } from "@/types";
 import { safeFileName, validateUpload } from "@/utils/upload";
+import { FriendlyError } from "@/utils/errors";
+
+export const DEFAULT_BUCKET: StorageBucket = "user-files";
 
 export async function uploadUserFile(opts: {
   userId: string;
-  bucket: StorageBucket;
+  bucket?: StorageBucket;
   file: File;
   category?: string;
 }) {
-  const { userId, bucket, file, category } = opts;
+  const { userId, file, category } = opts;
+  const bucket = opts.bucket ?? DEFAULT_BUCKET;
   const problem = validateUpload(bucket, file);
   if (problem) throw new Error(problem);
 
+  // Files always live under the owner's user-id folder so storage policies apply.
   const path = `${userId}/${Date.now()}-${safeFileName(file.name)}`;
   const { error: uploadError } = await supabase.storage
     .from(bucket)
     .upload(path, file, { cacheControl: "3600", upsert: false, contentType: file.type });
-  if (uploadError) throw uploadError;
+  if (uploadError) throw new FriendlyError(uploadError, "We couldn't upload that file.");
 
   const { data, error } = await supabase
     .from("uploaded_files")
@@ -31,15 +36,23 @@ export async function uploadUserFile(opts: {
     })
     .select()
     .single();
-  if (error) throw error;
+  if (error) throw new FriendlyError(error, "We couldn't save that file.");
   return data;
 }
 
 export async function getSignedUrl(bucket: StorageBucket, path: string, expiresIn = 3600) {
   const { data, error } = await supabase.storage.from(bucket).createSignedUrl(path, expiresIn);
-  if (error) throw error;
+  if (error) throw new FriendlyError(error, "We couldn't open that file.");
   return data.signedUrl;
 }
+
+export async function deleteUserFile(id: string, bucket: StorageBucket, path: string) {
+  const { error: storageError } = await supabase.storage.from(bucket).remove([path]);
+  if (storageError) throw new FriendlyError(storageError, "We couldn't delete that file.");
+  const { error } = await supabase.from("uploaded_files").delete().eq("id", id);
+  if (error) throw new FriendlyError(error, "We couldn't delete that file.");
+}
+
 
 export async function listUserFiles(userId: string) {
   const { data, error } = await supabase
