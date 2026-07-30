@@ -2,7 +2,9 @@ import type { StorageBucket } from "@/types";
 
 export const MAX_FILE_BYTES = 20 * 1024 * 1024; // 20 MB
 
-const ALLOWED: Record<StorageBucket, string[]> = {
+const ALLOWED: Record<StorageBucket, string[] | null> = {
+  // General-purpose per-user bucket: any supported file type is allowed.
+  "user-files": null,
   avatars: ["image/png", "image/jpeg", "image/webp", "image/gif"],
   images: ["image/png", "image/jpeg", "image/webp", "image/gif", "image/svg+xml"],
   voice: ["audio/mpeg", "audio/mp4", "audio/wav", "audio/webm", "audio/ogg"],
