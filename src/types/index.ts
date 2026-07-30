@@ -21,6 +21,7 @@ export type UserSettingsUpdate = TablesUpdate<"settings">;
 export type AiTool = "assignment_copilot" | "research_assistant" | "study_planner" | "second_brain";
 
 export type StorageBucket =
+  | "user-files"
   | "avatars"
   | "assignments"
   | "research"
