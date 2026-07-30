@@ -3,7 +3,7 @@ import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import type { Profile } from "@/types";
-import { fetchProfile } from "@/services/profile-service";
+import { ensureProfile, fetchProfile } from "@/services/profile-service";
 import { FriendlyError } from "@/utils/errors";
 
 interface AuthContextValue {
@@ -59,11 +59,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (user) void loadProfile(user);
   }, [user, loadProfile]);
 
-
-  useEffect(() => {
-    if (user?.id) void loadProfile(user.id);
-  }, [user?.id, loadProfile]);
-
   const value = useMemo<AuthContextValue>(
     () => ({
       user,
@@ -102,7 +97,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (error) throw new FriendlyError(error, "Could not update your password.");
       },
       refreshProfile: async () => {
-        if (user?.id) await loadProfile(user.id);
+        if (user) await loadProfile(user);
       },
       signOut: async () => {
         await supabase.auth.signOut();
